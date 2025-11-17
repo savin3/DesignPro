@@ -53,14 +53,11 @@
             {{ form.password2 }}
         </div>
 
-        <div>
-            {{ form.is_moderator.label_tag }}
-            {{ form.is_moderator }}
-        </div>
-
-        <div>
-            {{ form.personal_data_agreement.label_tag }}
-            {{ form.personal_data_agreement }}
+        <div class="checkbox-container">
+            <div class="checkbox-label">
+                {{ form.personal_data_agreement.label_tag }}
+                {{ form.personal_data_agreement }}
+            </div>
             {% if form.personal_data_agreement.errors %}
                 <div class="error">
                     {{ form.personal_data_agreement.errors }}
