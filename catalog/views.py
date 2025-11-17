@@ -8,10 +8,6 @@ def register_view(request):
             user.set_password(form.cleaned_data['password1'])
             user.save()
 
-            if form.cleaned_data.get('is_moderator'):
-                permission = Permission.objects.get(codename='moderator_access')
-                user.user_permissions.add(permission)
-
             login(request, user)
             return redirect('index')
     else:
