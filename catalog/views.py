@@ -1,3 +1,41 @@
 from django.shortcuts import render
 
-# Create your views here.
+def register_view(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password1'])
+            user.save()
+
+            if form.cleaned_data.get('is_moderator'):
+                permission = Permission.objects.get(codename='moderator_access')
+                user.user_permissions.add(permission)
+
+            login(request, user)
+            return redirect('index')
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, 'catalog/register.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('index')
+
+        return render(request, 'catalog/login.html', {'error': 'Неверное имя пользователя или пароль'})
+
+    return render(request, 'catalog/login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('index')
+
+def index_view(request):
+    return render(request, 'catalog/index.html')
