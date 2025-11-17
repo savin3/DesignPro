@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Base title {% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <a href="{% url 'index' %}">Главная</a>
+        <div>
+            {% if user.is_authenticated %}
+                <p>{{user.username}}</p>
+                <a href="{% url 'logout' %}">Выйти</a>
+            {% else %} <!-- Иначе-->
+                <a href="{% url 'login' %}">Войти</a>
+                <a href="{% url 'register' %}">Регистрация</a>
+            {% endif %}
+        </div>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

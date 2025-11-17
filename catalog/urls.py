@@ -1,4 +1,6 @@
-from designpro.catalog import views
+from django.urls import path
+
+from catalog import views
 
 urlpatterns = [
     path('', views.index_view, name='index'),

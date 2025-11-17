@@ -1,3 +1,9 @@
+from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.models import Permission
+from django.shortcuts import render, redirect
+from .forms import CustomUserCreationForm
+
+
 from django.shortcuts import render
 
 def register_view(request):
