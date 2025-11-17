@@ -37,3 +37,48 @@ class CustomUserCreationForm(UserCreationForm):
         model = AdvUser
         fields = ('last_name', 'first_name', 'patronymic', 'username', 'email', 'password1', 'password2',
         'personal_data_agreement')
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name')
+        if not re.match(r'^[а-яА-ЯёЁ\s\-]+$', last_name):
+            raise ValidationError(
+                'Фамилия должна содержать только кириллические буквы, пробелы и дефис')
+        return last_name
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        if not re.match(r'^[а-яА-ЯёЁ\s\-]+$', first_name):
+            raise ValidationError('Имя должно содержать только кириллические буквы, пробелы и дефис')
+        return first_name
+
+    def clean_patronymic(self):
+        patronymic = self.cleaned_data.get('patronymic')
+        if not re.match(r'^[а-яА-ЯёЁ\s\-]+$', patronymic):
+            raise ValidationError('Отчество должно содержать только кириллические буквы, пробелы и дефис')
+        return patronymic
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+
+        if not re.match(r'^[a-zA-Z\-]+$', username):
+            raise ValidationError('Логин должен содержать только латинские буквы и дефис')
+
+        if AdvUser.objects.filter(
+                username=username).exists():  # Если у нас есть пользователь с текущим логином, то кидаем ошибку
+            raise ValidationError('Пользователь с таким логином уже существует')
+
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+
+        if AdvUser.objects.filter(
+                email=email).exists():  # Если у нас есть пользователь с текущим email, то кидаем ошибку
+            raise ValidationError('Пользователь с таким email уже существует')
+        return email
+
+    def clean_personal_data_agreement(self):
+        agreement = self.cleaned_data.get('personal_data_agreement')
+        if not agreement:
+            raise ValidationError('Вы должны согласиться на обработку персональных данных')
+        return agreement
