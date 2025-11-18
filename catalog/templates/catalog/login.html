@@ -1,25 +1,36 @@
 {% extends 'catalog/base_template.html' %}
 {% block title %} Вход {% endblock %}
 {% block content %}
-
-    {% if error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-
-        <div>
-            <label for="username">Имя пользователя:</label>
-            <input type="text" id="username" name="username" required>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Вход в систему</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Имя пользователя</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Войти</button>
+                        </div>
+                    </form>
+                    <hr>
+                    <p class="text-center">
+                        <a href="{% url 'register' %}">Нет аккаунта? Зарегистрируйтесь</a>
+                    </p>
+                </div>
+            </div>
         </div>
-
-        <div>
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-
-        <button type="submit">Войти</button>
-    </form>
-
-    <p><a href="{% url 'register' %}">Нет аккаунта? Зарегистрируйтесь</a></p>
+    </div>
 {% endblock %}

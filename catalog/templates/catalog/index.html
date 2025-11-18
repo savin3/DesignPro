@@ -1,5 +1,14 @@
 {% extends 'catalog/base_template.html' %}
 {% block title %} Главная {% endblock %}
 {% block content %}
-    <h1>Добро пожаловать в DesignPro!</h1>
+    <div class="text-center py-5">
+        <h1 class="display-5 fw-bold">Добро пожаловать в DesignPro!</h1>
+        <p class="lead text-muted">Ваше пространство для творчества и дизайна</p>
+        {% if user.is_authenticated %}
+            <a href="#" class="btn btn-success btn-lg">Начать работу</a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg me-2">Зарегистрироваться</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">Войти</a>
+        {% endif %}
+    </div>
 {% endblock %}

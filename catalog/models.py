@@ -10,3 +10,4 @@ class AdvUser(AbstractUser):
 
     class Meta:
         permissions = (("moderator_access", "Доступ модератора"),)
+
