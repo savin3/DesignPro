@@ -41,3 +41,33 @@ def logout_view(request):
 
 def index_view(request):
     return render(request, 'catalog/index.html')
+
+
+@login_required
+def creating_request_view(request):
+    if request.method == 'POST':
+        form = RequestCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            request_obj = form.save(commit=False)
+            request_obj.user = request.user
+            request_obj.status = Status.objects.get(name="New")
+            request_obj.save()
+            return redirect('user_requests')
+    else:
+        form = RequestCreationForm()
+
+    return render(request, 'catalog/create_request.html', {
+        'form': form,
+        'list_categories': Category.objects.all()
+    })
+
+@login_required
+def deleting_request_view(request, pk):
+    request_to_delete = get_object_or_404(Request, pk=pk)
+    request_to_delete.delete()
+    return redirect('user_requests')
+
+@login_required
+def user_request_list_view(request):
+    request_user_list = Request.objects.filter(user=request.user)
+    return render(request, 'catalog/user_request_list.html', {'request_list': request_user_list})
