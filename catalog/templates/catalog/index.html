@@ -1,14 +1,53 @@
 {% extends 'catalog/base_template.html' %}
 {% block title %} Главная {% endblock %}
 {% block content %}
-    <div class="text-center py-5">
-        <h1 class="display-5 fw-bold">Добро пожаловать в DesignPro!</h1>
-        <p class="lead text-muted">Ваше пространство для творчества и дизайна</p>
-        {% if user.is_authenticated %}
-            <a href="#" class="btn btn-success btn-lg">Начать работу</a>
-        {% else %}
-            <a href="{% url 'register' %}" class="btn btn-primary btn-lg me-2">Зарегистрироваться</a>
-            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">Войти</a>
-        {% endif %}
+<div class="container mt-4">
+    <div class="alert alert-info mb-4">
+        <strong>Заявок в работе: {{ requests_in_work_count }}</strong>
     </div>
+
+    <h1 class="mb-4">Последние четыре выполненные заявки</h1>
+
+    {% if latest_completed_request_list %}
+        {% for request in latest_completed_request_list %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="card-title">{{ request.title }}</h3>
+                            <p class="card-text"><strong>Описание:</strong> {{ request.description }}</p>
+                            <p class="card-text"><strong>Категория:</strong> {{ request.category }}</p>
+                            <p class="card-text"><strong>Дата публикации:</strong> {{ request.pub_date }}</p>
+                            <p class="card-text"><strong>Автор:</strong> {{ request.user.get_full_name }}</p>
+                            <p class="card-text"><strong>Статус:</strong> {{ request.status }}</p>
+
+                            {% if request.image %}
+                                <p class="card-text"><strong>Изначальный дизайн:</strong></p>
+                                <img src="{{ request.image.url }}" class="img-fluid rounded" alt="Изображение дизайна" style="max-height: 200px;">
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            {% if request.status.name == "Выполнено" or request.status.name == "Принято в работу" %}
+                                {% if request.completed_image %}
+                                    <p class="card-text"><strong>Готовый дизайн:</strong></p>
+                                    <img src="{{ request.completed_image.url }}" class="img-fluid rounded" alt="Изображение готового дизайна" style="max-height: 200px;">
+                                {% endif %}
+
+                                {% if request.worker_comment %}
+                                    <p class="card-text mt-2"><strong>Комментарий дизайнера:</strong></p>
+                                    <p class="card-text">{{ request.worker_comment }}</p>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-light">
+            <p class="mb-0">Нет выполненных заявок!</p>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
