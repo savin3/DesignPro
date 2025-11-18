@@ -1,7 +1,9 @@
 from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
-from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import CustomUserCreationForm, RequestCreationForm
+from .models import Status, Category, Request
 
 
 from django.shortcuts import render
@@ -68,6 +70,6 @@ def deleting_request_view(request, pk):
     return redirect('user_requests')
 
 @login_required
-def user_request_list_view(request):
+def user_requests_view(request):
     request_user_list = Request.objects.filter(user=request.user)
-    return render(request, 'catalog/user_request_list.html', {'request_list': request_user_list})
+    return render(request, 'catalog/user_requests.html', {'request_list': request_user_list})

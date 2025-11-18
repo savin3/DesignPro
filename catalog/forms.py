@@ -1,10 +1,13 @@
 import re
+import os
 
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.core.exceptions import ValidationError
 
 from catalog.models import AdvUser
+
+from .models import Category, Request
 
 class CustomUserCreationForm(UserCreationForm):
     last_name = forms.CharField(
