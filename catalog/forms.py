@@ -94,6 +94,23 @@ class CustomUserCreationForm(UserCreationForm):
             raise ValidationError('Вы должны согласиться на обработку персональных данных')
         return agreement
 
+    def clean_password1(self):
+        password1 = self.cleaned_data.get('password1')
+
+        if len(password1) < 8:
+            raise ValidationError('Пароль должен содержать не менее 8 символов')
+
+        return password1
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+
+        if password1 and password2 and password1 != password2:
+            raise ValidationError('Повтор пароля не совпадает с паролем')
+
+        return password2
+
 
 class RequestCreationForm(forms.ModelForm):
     description = forms.CharField(

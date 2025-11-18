@@ -79,7 +79,21 @@ def deleting_request_view(request, pk):
 @login_required
 def user_requests_view(request):
     request_user_list = Request.objects.filter(user=request.user)
-    return render(request, 'catalog/user_requests.html', {'request_list': request_user_list})
+
+    status_filter = request.GET.get('status', 'all')
+
+    if status_filter == 'new':
+        filtered_requests = request_user_list.filter(status__name="New")
+    elif status_filter == 'in_work':
+        filtered_requests = request_user_list.filter(status__name="In_work")
+    elif status_filter == 'done':
+        filtered_requests = request_user_list.filter(status__name="Done")
+    else:
+        filtered_requests = request_user_list
+    return render(request, 'catalog/user_requests.html', {
+        'filtered_requests': filtered_requests,
+        'current_filter': status_filter,
+    })
 
 @login_required
 def profile_view(request):

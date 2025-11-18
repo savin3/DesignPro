@@ -4,8 +4,23 @@
 <div class="container mt-4">
     <h3>Мои заявки</h3>
 
-    {% if request_list %}
-        {% for request in request_list %}
+    <div class="mb-4">
+        <form method="get" action="{% url 'user_requests' %}">
+            <label for="status" class="form-label">Фильтр по статусу:</label>
+            <select name="status" id="status" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
+                <option value="all" {% if current_filter == 'all' %}selected{% endif %}>Все заявки</option>
+                <option value="new" {% if current_filter == 'new' %}selected{% endif %}>Новые</option>
+                <option value="in_work" {% if current_filter == 'in_work' %}selected{% endif %}>В работе</option>
+                <option value="done" {% if current_filter == 'done' %}selected{% endif %}>Выполненные</option>
+            </select>
+            <noscript>
+                <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">Применить</button>
+            </noscript>
+        </form>
+    </div>
+
+    {% if filtered_requests %}
+        {% for request in filtered_requests %}
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">{{ request.title }}</h5>
@@ -15,6 +30,7 @@
                     <p class="card-text"><strong>Статус:</strong> {{ request.status }}</p>
 
                     {% if request.image %}
+                        <p class="card-text"><strong>Изначальный дизайн:</strong></p>
                         <img src="{{ request.image.url }}" class="img-fluid rounded" alt="Изображение дизайна" style="max-height: 150px;">
                     {% endif %}
 
@@ -30,15 +46,21 @@
                         {% endif %}
                     {% endif %}
 
-                    <div class="mt-3">
-                        <a href="{% url 'delete' request.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
-                    </div>
+                    {% if request.status.name == "New" %}
+                        <div class="mt-3">
+                            <a href="{% url 'delete' request.pk %}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Вы уверены, что хотите удалить эту заявку?')">
+                                Удалить
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
     {% else %}
         <div class="alert alert-light">
-            <p class="mb-0">У вас пока нет заявок.</p>
+            <p class="mb-0">Заявок с выбранным статусом нет</p>
         </div>
     {% endif %}
 </div>
