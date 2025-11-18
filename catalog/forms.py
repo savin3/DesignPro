@@ -90,3 +90,49 @@ class CustomUserCreationForm(UserCreationForm):
         if not agreement:
             raise ValidationError('Вы должны согласиться на обработку персональных данных')
         return agreement
+
+
+class RequestCreationForm(forms.ModelForm):
+    description = forms.CharField(
+        max_length=1000,
+        required=True,
+        label='Описание заявки',
+        widget=forms.TextInput()
+    )
+    title = forms.CharField(
+        max_length=200,
+        required=True,
+        label='Заголовок заявки',
+        widget=forms.TextInput()
+    )
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        required=True,
+        label='Категории',
+        widget=forms.Select()
+    )
+    image = forms.ImageField(
+        required=True,
+        label='Изображение дизайна',
+        widget=forms.FileInput(attrs={'accept': 'image/*'}),
+        help_text='Допустимые форматы: JPG, JPEG, PNG, BMP. Максимальный размер: 2MB'
+    )
+
+    class Meta:
+        model = Request
+        fields = ['title', 'description', 'image', 'category']
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        self.validate_image_file(image)
+        return image
+
+    def validate_image_file(self, file):
+        max_size = 2 * 1024 * 1024
+        if file.size > max_size:
+            raise ValidationError("Размер файла не должен превышать 2MB")
+
+        valid_extensions = ['.jpg', '.jpeg', '.png', '.bmp']
+        ext = os.path.splitext(file.name)[1].lower()
+        if ext not in valid_extensions:
+            raise ValidationError("Недопустимый формат файла. Разрешены: JPG, JPEG, PNG, BMP")
