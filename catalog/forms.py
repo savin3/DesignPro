@@ -75,7 +75,7 @@ class CustomUserCreationForm(UserCreationForm):
             raise ValidationError('Логин должен содержать только латинские буквы и дефис')
 
         if AdvUser.objects.filter(
-                username=username).exists():  # Если у нас есть пользователь с текущим логином, то кидаем ошибку
+                username=username).exists():
             raise ValidationError('Пользователь с таким логином уже существует')
 
         return username
@@ -84,7 +84,7 @@ class CustomUserCreationForm(UserCreationForm):
         email = self.cleaned_data.get('email')
 
         if AdvUser.objects.filter(
-                email=email).exists():  # Если у нас есть пользователь с текущим email, то кидаем ошибку
+                email=email).exists():
             raise ValidationError('Пользователь с таким email уже существует')
         return email
 

@@ -14,10 +14,9 @@
                 <a href="{% url 'index' %}" class="text-white text-decoration-none h5">DesignPro</a>
                 <div class="d-flex gap-2">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'profile' %}">Профиль</a>
-                        <a href="{% url 'user_requests' %}">Мои заявки</a>
-                        <a href="{% url 'create' %}">Создать заявку</a>
-                        <span class="text-white">{{ user.username }}</span>
+                        <a href="{% url 'profile' %}" class="btn btn-outline-light btn-sm">Профиль</a>
+                        <a href="{% url 'user_requests' %}" class="btn btn-outline-light btn-sm">Мои заявки</a>
+                        <a href="{% url 'create' %}" class="btn btn-outline-light btn-sm">Создать заявку</a>
                         <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Выйти</a>
                     {% else %}
                         <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">Войти</a>
