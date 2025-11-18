@@ -42,17 +42,12 @@ def logout_view(request):
     return redirect('index')
 
 def index_view(request):
-    try:
-        in_work_status = Status.objects.get(name="In_work")
-        requests_in_work_count = Request.objects.filter(status=in_work_status).count()
-        done_status = Status.objects.get(name="Done")
-        latest_completed_request_list = Request.objects.filter(
-            status=done_status
-        ).order_by('-pub_date')[:4]
-
-    except Status.DoesNotExist:
-        latest_completed_request_list = Request.objects.none()
-        requests_in_work_count = 0
+    in_work_status = Status.objects.get(name="In_work")
+    requests_in_work_count = Request.objects.filter(status=in_work_status).count()
+    done_status = Status.objects.get(name="Done")
+    latest_completed_request_list = Request.objects.filter(
+        status=done_status
+    ).order_by('-pub_date')[:4]
 
     return render(request, 'catalog/index.html', {'latest_completed_request_list': latest_completed_request_list, 'requests_in_work_count': requests_in_work_count})
 
@@ -85,3 +80,7 @@ def deleting_request_view(request, pk):
 def user_requests_view(request):
     request_user_list = Request.objects.filter(user=request.user)
     return render(request, 'catalog/user_requests.html', {'request_list': request_user_list})
+
+@login_required
+def profile_view(request):
+    return render(request, 'catalog/profile.html')

@@ -1,0 +1,32 @@
+{% extends 'catalog/base_template.html' %}
+{% block title %} Профиль {% endblock %}
+{% block content %}
+    <h1>Профиль пользователя</h1>
+
+    <div style="max-width: 600px;">
+        <div>
+            <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
+        </div>
+        <div>
+            <p><strong>Имя:</strong> {{ user.first_name }}</p>
+        </div>
+        <div>
+            <p><strong>Отчество:</strong> {{ user.patronymic }}</p>
+        </div>
+        <div>
+            <p><strong>Имя пользователя:</strong> {{ user.username }}</p>
+        </div>
+        <div>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+        </div>
+        <div>
+            <p><strong>Роль:</strong>
+                {% if perms.catalog.moderator_access %}
+                    Модератор
+                {% else %}
+                    Пользователь
+                {% endif %}
+            </p>
+        </div>
+    </div>
+{% endblock %}

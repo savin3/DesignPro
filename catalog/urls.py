@@ -10,4 +10,5 @@ urlpatterns = [
     path('request/', views.user_requests_view, name='user_requests'),
     path('request/delete/<int:pk>/', views.deleting_request_view, name='delete'),
     path('request/create/', views.creating_request_view, name='create'),
+    path('profile', views.profile_view, name='profile'),
 ]
