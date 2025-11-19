@@ -98,3 +98,116 @@ def user_requests_view(request):
 @login_required
 def profile_view(request):
     return render(request, 'catalog/profile.html')
+
+
+
+@login_required
+def admin_panel_include_all_requests_view(request):
+    all_request_list = Request.objects.all()
+    return render(request, 'catalog/admin_panel.html', {'all_request_list':all_request_list})
+
+@login_required
+@permission_required('catalog.moderator_access')
+def category_view(request):
+    if request.method == 'POST':
+        form = CategoryCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('category')
+    else:
+        form = CategoryCreationForm()
+
+    list_categories = Category.objects.all()
+    return render(request, 'catalog/category.html', {
+        'list_categories': list_categories,
+        'form': form
+    })
+
+@login_required
+def deleting_category_view(request, pk):
+    category_to_delete = get_object_or_404(Category, pk=pk)
+    category_to_delete.delete()
+    return redirect('category')
+
+@login_required
+@permission_required('catalog.moderator_access')
+def edit_request_view(request, pk):
+    changeable_request = get_object_or_404(Request, pk=pk)
+
+    if request.method == 'POST':
+        if 'edit_category' in request.POST:
+            category_id = request.POST.get('category')
+            changeable_request.category = Category.objects.get(id=category_id)
+            changeable_request.save()
+            return redirect('admin_panel')
+
+        elif 'edit_status_to_in_work' in request.POST:
+            worker_comment = request.POST.get('worker_comment')
+            completed_image = request.FILES.get('completed_image')
+
+            if completed_image:
+                try:
+                    validate_image_file(completed_image)
+                except ValidationError as e:
+                    form = RequestEditForm(instance=changeable_request)
+                    list_categories = Category.objects.all()
+                    return render(request, 'catalog/edit_request.html', {
+                        'changeable_request': changeable_request,
+                        'list_categories': list_categories,
+                        'form': form,
+                        'error': str(e)
+                    })
+            changeable_request.status = Status.objects.get(name="In_work")
+
+            changeable_request.worker_comment = worker_comment
+            if completed_image:
+                changeable_request.completed_image = completed_image
+
+            changeable_request.save()
+            return redirect('admin_panel')
+
+        elif 'edit_status_to_done' in request.POST:
+            worker_comment = request.POST.get('worker_comment')
+            completed_image = request.FILES.get('completed_image')
+
+            if completed_image:
+                try:
+                    validate_image_file(completed_image)
+                except ValidationError as e:
+                    form = RequestEditForm(instance=changeable_request)
+                    list_categories = Category.objects.all()
+                    return render(request, 'catalog/edit_request.html', {
+                        'changeable_request': changeable_request,
+                        'list_categories': list_categories,
+                        'form': form,
+                        'error': str(e)
+                    })
+
+            changeable_request.status = Status.objects.get(name="Done")
+
+            changeable_request.worker_comment = worker_comment
+            if completed_image:
+                changeable_request.completed_image = completed_image
+
+            changeable_request.save()
+            return redirect('admin_panel')
+
+    form = RequestEditForm(instance=changeable_request)
+    list_categories = Category.objects.all()
+
+    return render(request, 'catalog/edit_request.html', {
+        'changeable_request': changeable_request,
+        'list_categories': list_categories,
+        'form': form,
+    })
+
+
+def validate_image_file(file):
+    max_size = 2 * 1024 * 1024
+    if file.size > max_size:
+        raise ValidationError("Размер файла не должен превышать 2MB")
+
+    valid_extensions = ['.jpg', '.jpeg', '.png', '.bmp']
+    ext = os.path.splitext(file.name)[1].lower()
+    if ext not in valid_extensions:
+        raise ValidationError("Недопустимый формат файла. Разрешены: JPG, JPEG, PNG, BMP")
