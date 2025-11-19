@@ -1,22 +1,38 @@
 {% extends 'catalog/base_template.html' %}
 {% block title %} Создание категории {% endblock %}
 {% block content %}
-
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <b>Все категории:</b>
-        <ul style="list-style-type: none">
-            {% for category in list_categories %}
-                <li>
-                    {{category.name}}
-                    <a href="{% url 'delete_category' category.pk %}" onclick="return confirm('Вы уверены, что хотите удалить эту категорию?')">Удалить</a>
-                </li>
-            {% endfor %}
-        </ul>
-        <div>
-            {{form.name.label_tag}}
-            {{form.name}}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-secondary text-white text-center">
+            <h4>Управление категориями</h4>
         </div>
-        <button type="submit">Добавить категорию</button>
-    </form>
+        <div class="card-body">
+            <h5>Все категории:</h5>
+            <ul class="list-group mb-4">
+                {% for category in list_categories %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ category.name }}
+                        <a href="{% url 'delete_category' category.pk %}" class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('Вы уверены, что хотите удалить эту категорию?')">
+                            Удалить
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <h5>Добавить новую категорию:</h5>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="text-danger small">{{ form.name.errors }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-success">Добавить категорию</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

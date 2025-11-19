@@ -1,37 +1,52 @@
 {% extends 'catalog/base_template.html' %}
 {% block title %} Админ панель {% endblock %}
 {% block content %}
+<div class="container mt-4">
+    <h1>Все заявки</h1>
+
     {% if all_request_list %}
-    <h1>Все заявки:</h1>
-    <ul style="list-style-type: none">
         {% for request in all_request_list %}
-                <li style="border-width: 1px; border-color: black; border-style: solid; margin-bottom: 20px; display: flex; align-items: center; column-gap: 100px">
-                    <div style="margin-left: 50px">
-                        <p>Название: {{ request.title }}</p>
-                        <p>Описание: {{ request.description }}</p>
-                        <img src="{{ request.image.url }}" alt="Изображение дизайна" style="height: 200px; width: 200px" >
-                        <p>Категория: {{ request.category }}</p>
-                        <p>Статус: {{ request.status }}</p>
-                        <div>
-                            <a href="{% url 'edit_request' request.pk %}">Редактировать</a>
-                            <a href="{% url 'delete' request.pk %}" onclick="return confirm('Вы уверены, что хотите удалить эту заявку?')">Удалить</a>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="card-title">{{ request.title }}</h5>
+                            <p class="card-text"><strong>Описание:</strong> {{ request.description }}</p>
+                            <p class="card-text"><strong>Категория:</strong> {{ request.category }}</p>
+                            <p class="card-text"><strong>Статус:</strong> {{ request.status }}</p>
+                            {% if request.image %}
+                                <p class="card-text"><strong>Изначальный дизайн:</strong></p>
+                                <img src="{{ request.image.url }}" class="img-fluid rounded" alt="Изображение дизайна" style="max-height: 150px;">
+                            {% endif %}
+                            <div class="mt-3">
+                                <a href="{% url 'edit_request' request.pk %}" class="btn btn-sm btn-outline-primary">Редактировать</a>
+                                <a href="{% url 'delete' request.pk %}"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Вы уверены, что хотите удалить эту заявку?')">
+                                    Удалить
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            {% if request.status.name == "Done" or request.status.name == "In_work" %}
+                                {% if request.completed_image %}
+                                    <p class="card-text"><strong>Готовый дизайн:</strong></p>
+                                    <img src="{{ request.completed_image.url }}" class="img-fluid rounded" alt="Изображение готового дизайна" style="max-height: 150px;">
+                                {% endif %}
+                                {% if request.worker_comment %}
+                                    <p class="card-text mt-2"><strong>Комментарий дизайнера:</strong></p>
+                                    <p class="card-text">{{ request.worker_comment }}</p>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     </div>
-                    <div style="align-items: center">
-                        {% if request.status.name == "Done" or request.status.name == "In_work" %}
-                        {% if request.completed_image %}
-                            <p>Готовый дизайн:</p>
-                            <img src="{{ request.completed_image.url }}" alt="Изображение готового дизайна" style="height: 200px; width: 200px" >
-                        {% endif%}
-                        <p>{{ request.worker_comment}}</p>
-                        {% endif %}
-                    </div>
-                </li>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
     {% else %}
-        <p>
-            У вас нет заявок
-        </p>
+        <div class="alert alert-info">
+            <p class="mb-0">Заявок пока нет</p>
+        </div>
     {% endif %}
+</div>
 {% endblock %}

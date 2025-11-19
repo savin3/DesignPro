@@ -1,94 +1,98 @@
 {% extends 'catalog/base_template.html' %}
 {% block title %} Редактирование заявки {% endblock %}
 {% block content %}
-
-    <div style="margin-bottom: 30px;">
-        <h3>Текущая информация:</h3>
-        <p><strong>Название:</strong> {{ changeable_request.title }}</p>
-        <p><strong>Описание:</strong> {{ changeable_request.description }}</p>
-        <p><strong>Текущая категория:</strong> {{ changeable_request.category }}</p>
-        <p><strong>Текущий статус:</strong> {{ changeable_request.status }}</p>
-        {% if changeable_request.image %}
-            <p><strong>Изображение:</strong></p>
-            <img src="{{ changeable_request.image.url }}" alt="Изображение заявки" style="height: 200px; width: 200px">
-        {% endif %}
+<div class="container mt-4">
+    <div class="alert alert-info mb-4">
+        <strong>Текущая информация:</strong>
     </div>
-
-    <div style="display: flex; gap: 50px;">
-        <div style="border: 1px solid; padding: 20px; border-radius: 5px;">
-            <h3>Изменить статус</h3>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-
-                {% if error %}
-                    <div style="color: red; margin-bottom: 20px;">
-                        {{ error }}
-                    </div>
-                {% endif %}
-                <div>
-                    {%if changeable_request.status.name == "New"%}
-                        <div>
-                            {{form.worker_comment.label_tag}}
-                            <input type="text" name="worker_comment" required>
-                        </div>
-                        <div>
-                            {{form.completed_image.label_tag}}
-                            <input type="file" name="completed_image" accept="completed_image/*">
-                            {{form.completed_image.help_text}}
-                        </div>
-                        <button type="submit" name="edit_status_to_in_work">Изменить на in_work</button>
-                    {%else%}
-                        <button type="submit" disabled>Изменить на in_work</button>
-                    {% endif %}
-                </div>
-            </form>
-
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-
-                {% if error %}
-                    <div style="color: red; margin-bottom: 20px;">
-                        {{ error }}
-                    </div>
-                {% endif %}
-                <div>
-                    {%if changeable_request.status.name == "New"%}
-                        <div>
-                            {{form.worker_comment.label_tag}}
-                            <input type="text" name="worker_comment">
-                        </div>
-                        <div>
-                            {{form.completed_image.label_tag}}
-                            <input type="file" name="completed_image" accept="completed_image/*" required>
-                            {{form.completed_image.help_text}}
-                        </div>
-                        <button type="submit" name="edit_status_to_done">Изменить на done</button>
-                    {%else%}
-                        <button type="submit" disabled>Изменить на done</button>
-                    {% endif %}
-                </div>
-            </form>
-
-        </div>
-
-        <div style="border: 1px solid; padding: 20px; border-radius: 5px;">
-            <h3>Изменить категорию</h3>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="category">Категории:</label>
-                    <select id="category" name="category" style="margin: 10px 0; padding: 5px;">
-                        {% for category in list_categories %}
-                            <option value="{{ category.id }}" {% if category.id == changeable_request.category.id %}selected{% endif %}>
-                                {{ category }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <button type="submit" name="edit_category" style="padding: 8px 16px; border: none; border-radius: 4px;">
-                    Изменить категорию
-                </button>
-            </form>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Название:</strong> {{ changeable_request.title }}</p>
+            <p><strong>Описание:</strong> {{ changeable_request.description }}</p>
+            <p><strong>Текущая категория:</strong> {{ changeable_request.category }}</p>
+            <p><strong>Текущий статус:</strong> {{ changeable_request.status }}</p>
+            {% if changeable_request.image %}
+                <p><strong>Изображение:</strong></p>
+                <img src="{{ changeable_request.image.url }}" alt="Изображение заявки" class="img-fluid rounded" style="max-height: 200px;">
+            {% endif %}
         </div>
     </div>
-{%endblock%}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5>Изменить статус</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% if error %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                        {% endif %}
+                        {% if changeable_request.status.name == "New" %}
+                            <div class="mb-3">
+                                <label for="worker_comment" class="form-label">Комментарий дизайнера</label>
+                                <input type="text" class="form-control" id="worker_comment" name="worker_comment">
+                            </div>
+                            <div class="mb-3">
+                                <label for="completed_image" class="form-label">Готовый дизайн</label>
+                                <input type="file" class="form-control" id="completed_image" name="completed_image" accept="image/*">
+                                <small class="form-text text-muted">Допустимые форматы: JPG, JPEG, PNG, BMP. Максимальный размер: 2MB</small>
+                            </div>
+                            <button type="submit" name="edit_status_to_in_work" class="btn btn-success w-100">Изменить на "В работе"</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-secondary w-100" disabled>Изменить на "В работе"</button>
+                        {% endif %}
+                    </form>
+                    <hr>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% if error %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                        {% endif %}
+                        {% if changeable_request.status.name == "New" %}
+                            <div class="mb-3">
+                                <label for="worker_comment_done" class="form-label">Комментарий дизайнера</label>
+                                <input type="text" class="form-control" id="worker_comment_done" name="worker_comment" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="completed_image_done" class="form-label">Готовый дизайн</label>
+                                <input type="file" class="form-control" id="completed_image_done" name="completed_image" accept="image/*" required>
+                                <small class="form-text text-muted">Допустимые форматы: JPG, JPEG, PNG, BMP. Максимальный размер: 2MB</small>
+                            </div>
+                            <button type="submit" name="edit_status_to_done" class="btn btn-success w-100">Изменить на "Выполнено"</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-secondary w-100" disabled>Изменить на "Выполнено"</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white text-center">
+                    <h5>Изменить категорию</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Выберите категорию</label>
+                            <select class="form-select" id="category" name="category">
+                                {% for category in list_categories %}
+                                    <option value="{{ category.id }}" {% if category.id == changeable_request.category.id %}selected{% endif %}>
+                                        {{ category }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" name="edit_category" class="btn btn-info w-100">Изменить категорию</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
