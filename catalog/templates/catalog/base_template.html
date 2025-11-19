@@ -26,7 +26,7 @@
                     {% if user.is_authenticated and not perms.catalog.moderator_access %}
                         <a href="{% url 'profile' %}" class="btn btn-outline-light btn-sm">Профиль</a>
                         <a href="{% url 'user_requests' %}" class="btn btn-outline-light btn-sm">Мои заявки</a>
-                        <a href="{% url 'create' %}" class="btn btn-outline-light btn-sm">Создать заявку</a>Ы
+                        <a href="{% url 'create' %}" class="btn btn-outline-light btn-sm">Создать заявку</a>
                     {% endif %}
                 </div>
             </div>
