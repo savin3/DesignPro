@@ -14,27 +14,27 @@ class CustomUserCreationForm(UserCreationForm):
         max_length=200,
         required=True,
         label='Фамилия',
-        widget=forms.TextInput()
+        widget=forms.TextInput(attrs={'class': 'form-control'})
     )
 
     first_name = forms.CharField(
         max_length=200,
         required=True,
         label='Имя',
-        widget=forms.TextInput()
+        widget=forms.TextInput(attrs={'class': 'form-control'})
     )
 
     patronymic = forms.CharField(
         max_length=200,
         required=True,
         label='Отчество',
-        widget=forms.TextInput()
+        widget=forms.TextInput(attrs={'class': 'form-control'})
     )
 
     email = forms.EmailField(
         required=True,
         label='Email',
-        widget=forms.EmailInput()
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
 
     personal_data_agreement = forms.BooleanField(
@@ -43,6 +43,13 @@ class CustomUserCreationForm(UserCreationForm):
         widget=forms.CheckboxInput(),
         error_messages={'required': 'Вы должны согласиться на обработку персональных данных'}
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
 
     class Meta:
         model = AdvUser
