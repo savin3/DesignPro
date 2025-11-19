@@ -10,20 +10,33 @@
 <body class="bg-light">
     <header class="bg-dark text-white shadow-sm">
         <div class="container">
-            <div class="d-flex justify-content-between align-items-center py-2">
-                <a href="{% url 'index' %}" class="text-white text-decoration-none h5">DesignPro</a>
-                <div class="d-flex gap-2">
+            <nav class="navbar navbar-expand navbar-dark bg-dark p-0">
+                <div class="navbar-nav flex-grow-1">
+                    <a class="nav-link text-white" href="{% url 'index' %}">Главная</a>
                     {% if user.is_authenticated %}
-                        <a href="{% url 'profile' %}" class="btn btn-outline-light btn-sm">Профиль</a>
-                        <a href="{% url 'user_requests' %}" class="btn btn-outline-light btn-sm">Мои заявки</a>
-                        <a href="{% url 'create' %}" class="btn btn-outline-light btn-sm">Создать заявку</a>
-                        <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Выйти</a>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">Войти</a>
-                        <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Регистрация</a>
+                        <a class="nav-link text-white" href="{% url 'create' %}">Создать заявку</a>
+                        <a class="nav-link text-white" href="{% url 'user_requests' %}">Мои заявки</a>
+                    {% endif %}
+                    {% if user.is_authenticated and perms.catalog.moderator_access %}
+                        <a class="nav-link text-white" href="{% url 'admin_panel' %}">Админ-панель</a>
+                        <a class="nav-link text-white" href="{% url 'category' %}">Категории</a>
                     {% endif %}
                 </div>
-            </div>
+                <div class="d-flex align-items-center">
+                    {% if user.is_authenticated %}
+                        <span class="navbar-text me-3">Здравствуйте, {{ user.username }}!</span>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'profile' %}" class="btn btn-outline-light btn-sm">Профиль</a>
+                            <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Выйти</a>
+                        </div>
+                    {% else %}
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">Войти</a>
+                            <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Регистрация</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </nav>
         </div>
     </header>
 

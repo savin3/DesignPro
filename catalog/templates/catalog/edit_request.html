@@ -29,7 +29,7 @@
                     {%if changeable_request.status.name == "New"%}
                         <div>
                             {{form.worker_comment.label_tag}}
-                            <input type="text" name="worker_comment" required> <!--Устанавливаем полю для ввода комментария дизайнера обязательность-->
+                            <input type="text" name="worker_comment" required>
                         </div>
                         <div>
                             {{form.completed_image.label_tag}}
@@ -59,7 +59,7 @@
                         </div>
                         <div>
                             {{form.completed_image.label_tag}}
-                            <input type="file" name="completed_image" accept="completed_image/*" required> <!--Устанавливаем полю для ввода изображения обязательность-->
+                            <input type="file" name="completed_image" accept="completed_image/*" required>
                             {{form.completed_image.help_text}}
                         </div>
                         <button type="submit" name="edit_status_to_done">Изменить на done</button>
@@ -79,7 +79,7 @@
                     <label for="category">Категории:</label>
                     <select id="category" name="category" style="margin: 10px 0; padding: 5px;">
                         {% for category in list_categories %}
-                            <option value="{{ category.id }}" {% if category.id == changeable_request.category.id %}selected{% endif %}> <!--Если категория из списка_категорий, находит пару тут, то мы делаем ее выбранной-->
+                            <option value="{{ category.id }}" {% if category.id == changeable_request.category.id %}selected{% endif %}>
                                 {{ category }}
                             </option>
                         {% endfor %}
